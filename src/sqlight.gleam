@@ -300,11 +300,11 @@ pub fn error_code_from_int(code: Int) -> ErrorCode {
 }
 
 @external(erlang, "sqlight_ffi", "open")
-@external(javascript, "./sqlight_ffi.js", "open")
+@external(javascript, "./sqlight_ffi.mjs", "open")
 fn open_(a: String) -> Result(Connection, Error)
 
 @external(erlang, "sqlight_ffi", "close")
-@external(javascript, "./sqlight_ffi.js", "close")
+@external(javascript, "./sqlight_ffi.mjs", "close")
 fn close_(a: Connection) -> Result(Nil, Error)
 
 /// Open a connection to a SQLite database.
@@ -401,7 +401,7 @@ pub fn query(
 }
 
 @external(erlang, "sqlight_ffi", "query")
-@external(javascript, "./sqlight_ffi.js", "query")
+@external(javascript, "./sqlight_ffi.mjs", "query")
 fn run_query(
   a: String,
   b: Connection,
@@ -409,11 +409,11 @@ fn run_query(
 ) -> Result(List(Dynamic), Error)
 
 @external(erlang, "sqlight_ffi", "coerce_value")
-@external(javascript, "./sqlight_ffi.js", "coerce_value")
+@external(javascript, "./sqlight_ffi.mjs", "coerce_value")
 fn coerce_value(a: a) -> Value
 
 @external(erlang, "sqlight_ffi", "exec")
-@external(javascript, "./sqlight_ffi.js", "exec")
+@external(javascript, "./sqlight_ffi.mjs", "exec")
 fn exec_(a: String, b: Connection) -> Result(Nil, Error)
 
 /// Convert a Gleam `Option` to an SQLite nullable value, to be used an argument
@@ -451,7 +451,7 @@ pub fn text(value: String) -> Value {
 /// query.
 ///
 @external(erlang, "sqlight_ffi", "coerce_blob")
-@external(javascript, "./sqlight_ffi.js", "coerce_blob")
+@external(javascript, "./sqlight_ffi.mjs", "coerce_blob")
 pub fn blob(value: BitArray) -> Value
 
 /// Convert a Gleam `Bool` to an SQLite int, to be used an argument to a
@@ -472,7 +472,7 @@ pub fn bool(value: Bool) -> Value {
 /// Construct an SQLite null, to be used an argument to a query.
 ///
 @external(erlang, "sqlight_ffi", "null")
-@external(javascript, "./sqlight_ffi.js", "null_")
+@external(javascript, "./sqlight_ffi.mjs", "null_")
 pub fn null() -> Value
 
 /// Decode an SQLite boolean value.
