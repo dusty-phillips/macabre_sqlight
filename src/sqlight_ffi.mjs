@@ -55,25 +55,9 @@ export function query(sql, connection, parameters) {
   try {
     const paramsArray = parameters.toArray().map(p => p === undefined ? null : p);
 
-    // Node.js sqlite doesn't support numbered parameters (?1, ?2, etc.)
-    // We need to expand the parameters according to the numbered placeholders
-    // For example: "select ?1, typeof(?1)" with [value] should become "select ?, ?" with [value, value]
-    const numberedParams = [];
-    const convertedSql = sql.replace(/\?(\d+)?/g, (match, num) => {
-      if (num) {
-        // Numbered parameter like ?1, ?2
-        const index = parseInt(num) - 1; // Convert to 0-based index
-        numberedParams.push(paramsArray[index]);
-      } else {
-        // Anonymous parameter ?
-        numberedParams.push(paramsArray[numberedParams.length]);
-      }
-      return '?';
-    });
-
-    const stmt = connection.prepare(convertedSql);
+    const stmt = connection.prepare(sql);
     // Use all() to get query results, not run()
-    rows = stmt.all(...numberedParams);
+    rows = stmt.all(...paramsArray);
 
     // Convert rows from object format to indexed format for Gleam decoder
     // Gleam expects {0: val1, 1: val2, ...} but Node.js gives {col1: val1, col2: val2, ...}
