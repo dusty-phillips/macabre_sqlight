@@ -30,9 +30,15 @@ export function coerce_value(value) {
 }
 
 export function coerce_blob(value) {
-  // Convert BitArray to Buffer for Node.js sqlite
+  // Convert BitArray to Uint8Array/Buffer for Node.js/Deno sqlite
   if (value instanceof BitArray) {
-    return Buffer.from(value.rawBuffer);
+    // For Deno, Buffer may not be available, use Uint8Array
+    if (typeof Buffer !== 'undefined') {
+      return Buffer.from(value.rawBuffer);
+    } else {
+      // Deno: return Uint8Array directly
+      return value.rawBuffer;
+    }
   }
   return value;
 }
