@@ -1,12 +1,12 @@
 import { DatabaseSync } from "node:sqlite";
-import { List, Ok, Error as GlError, BitArray } from "./gleam.mjs";
+import { List, Result$Ok, Result$Error, BitArray } from "./gleam.mjs";
 import { SqlightError, error_code_from_int } from "./sqlight.mjs";
 
 export function open(path) {
   try {
     // Empty path should open in-memory database
     const dbPath = path === "" ? ":memory:" : path;
-    return new Ok(new DatabaseSync(dbPath));
+    return Result$Ok(new DatabaseSync(dbPath));
   } catch (error) {
     return convert_error(error);
   }
@@ -15,11 +15,11 @@ export function open(path) {
 export function close(connection) {
   try {
     connection.close();
-    return new Ok(undefined);
+    return Result$Ok(undefined);
   } catch (error) {
     // Ignore "database is not open" error on multiple close calls
     if (error.message && error.message.includes("database is not open")) {
-      return new Ok(undefined);
+      return Result$Ok(undefined);
     }
     return convert_error(error);
   }
@@ -50,7 +50,7 @@ export function status(connection) {
 export function exec(sql, connection) {
   try {
     connection.exec(sql);
-    return new Ok(undefined);
+    return Result$Ok(undefined);
   } catch (error) {
     return convert_error(error);
   }
@@ -86,7 +86,7 @@ export function query(sql, connection, parameters) {
       return indexed;
     });
 
-    return new Ok(List.fromArray(indexedRows));
+    return Result$Ok(List.fromArray(indexedRows));
   } catch (error) {
     return convert_error(error);
   }
@@ -128,7 +128,7 @@ function convert_error(error) {
   }
 
   const errorCode = error_code_from_int(code);
-  return new GlError(
+  return Result$Error(
     new SqlightError(
       errorCode,
       error.message || String(error),
