@@ -1,6 +1,6 @@
 import { DatabaseSync } from "node:sqlite";
-import { List, Result$Ok, Result$Error, BitArray } from "./gleam.mjs";
-import { SqlightError, error_code_from_int } from "./sqlight.mjs";
+import { toList, Result$Ok, Result$Error, BitArray$BitArray, BitArray$isBitArray, BitArray$BitArray$data } from "./gleam.mjs";
+import { Error$SqlightError, error_code_from_int } from "./sqlight.mjs";
 
 export function open(path) {
   try {
@@ -31,13 +31,16 @@ export function coerce_value(value) {
 
 export function coerce_blob(value) {
   // Convert BitArray to Uint8Array/Buffer for Node.js/Deno sqlite
-  if (value instanceof BitArray) {
+  if (BitArray$isBitArray(value)) {
+    const data = BitArray$BitArray$data(value);
+    // Convert DataView to Uint8Array
+    const uint8Array = new Uint8Array(data.buffer, data.byteOffset, data.byteLength);
     // For Deno, Buffer may not be available, use Uint8Array
     if (typeof Buffer !== 'undefined') {
-      return Buffer.from(value.rawBuffer);
+      return Buffer.from(uint8Array);
     } else {
       // Deno: return Uint8Array directly
-      return value.rawBuffer;
+      return uint8Array;
     }
   }
   return value;
@@ -77,7 +80,7 @@ export function query(sql, connection, parameters) {
         }
         // Convert Uint8Array (BLOB) to BitArray
         else if (val instanceof Uint8Array) {
-          indexed[idx] = new BitArray(val);
+          indexed[idx] = BitArray$BitArray(val);
         }
         else {
           indexed[idx] = val;
@@ -86,7 +89,7 @@ export function query(sql, connection, parameters) {
       return indexed;
     });
 
-    return Result$Ok(List.fromArray(indexedRows));
+    return Result$Ok(toList(indexedRows));
   } catch (error) {
     return convert_error(error);
   }
@@ -129,7 +132,7 @@ function convert_error(error) {
 
   const errorCode = error_code_from_int(code);
   return Result$Error(
-    new SqlightError(
+    Error$SqlightError(
       errorCode,
       error.message || String(error),
       error.offset !== undefined ? error.offset : -1
