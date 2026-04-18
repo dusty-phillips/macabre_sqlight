@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.1.0 - 2026-04-18
+
+- Updated for `gleam_stdlib` v1.0.0.
+
 ## v1.0.3 - 2025-10-21
 
 - Remove version specifier for Deno `x/sqlite` import.
