@@ -46,10 +46,6 @@ export function coerce_blob(value) {
   return value;
 }
 
-export function status(connection) {
-  throw new Error("status");
-}
-
 export function exec(sql, connection) {
   try {
     connection.exec(sql);
@@ -62,31 +58,23 @@ export function exec(sql, connection) {
 export function query(sql, connection, parameters) {
   let rows;
   try {
-    const paramsArray = parameters.toArray().map(p => p === undefined ? null : p);
+    const paramsArray = parameters.toArray();
 
     const stmt = connection.prepare(sql);
-    // Use all() to get query results, not run()
     rows = stmt.all(...paramsArray);
 
-    // Convert rows from object format to indexed format for Gleam decoder
-    // Gleam expects {0: val1, 1: val2, ...} but Node.js gives {col1: val1, col2: val2, ...}
     const indexedRows = rows.map(row => {
-      const values = Object.values(row);
-      const indexed = {};
-      values.forEach((val, idx) => {
-        // Convert null to undefined for Gleam's optional decoder
+      const result = [];
+      for (const val of Object.values(row)) {
         if (val === null) {
-          indexed[idx] = undefined;
+          result.push(undefined);
+        } else if (val instanceof Uint8Array) {
+          result.push(BitArray$BitArray(val));
+        } else {
+          result.push(val);
         }
-        // Convert Uint8Array (BLOB) to BitArray
-        else if (val instanceof Uint8Array) {
-          indexed[idx] = BitArray$BitArray(val);
-        }
-        else {
-          indexed[idx] = val;
-        }
-      });
-      return indexed;
+      }
+      return result;
     });
 
     return Result$Ok(toList(indexedRows));
@@ -96,9 +84,7 @@ export function query(sql, connection, parameters) {
 }
 
 export function null_() {
-  // Node.js SQLite expects null, but Gleam uses undefined internally
-  // The query function will convert undefined to null when binding
-  return undefined;
+  return null;
 }
 
 function convert_error(error) {
