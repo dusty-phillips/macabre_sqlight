@@ -5,7 +5,8 @@
 
 Use [SQLite](https://www.sqlite.org/index.html) from Gleam!
 
-Works on Erlang or JavaScript running on Deno.
+Works on Erlang and on JavaScript runtimes that support `node:sqlite`, like
+NodeJS, and NodeJS.
 
 ```sh
 gleam add sqlight
@@ -63,9 +64,9 @@ When running on Erlang it is a library wrapper around the excellent Erlang libra
 the SQLite C library. It is implemented as a NIF, which means that the SQLite
 database engine is linked to the erlang virtual machine.
 
-When running on Deno it is a wrapper around the excellent
-[x/sqlite](https://deno.land/x/sqlite@v3.7.0) library, which in turn is a
-wrapper around the SQLite C library compiled to WASM.
+When running on JavaScript it is a wrapper around the
+[`node:sqlite`](https://nodejs.org/api/sqlite.html) module that is built-in to
+the most common runtimes.
 
 ## On using Bool with SQLite
 

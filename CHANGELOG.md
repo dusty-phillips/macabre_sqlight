@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.2.0 - 2026-07-10
+
+- Support added for other JavaScript runtimes such as NodeJS by migrating to
+  `node:sqlite`.
+
 ## v1.1.0 - 2026-04-18
 
 - Updated for `gleam_stdlib` v1.0.0.
