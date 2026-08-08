@@ -12,21 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: erlef/setup-beam@v1
+      - uses: actions/setup-python@v4
         with:
-          otp-version: "28"
-          gleam-version: "1.15.0"
-          rebar3-version: "3"
-      - uses: denoland/setup-deno@v1
-        with:
-          deno-version: v2.x
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 25
-
-      - run: gleam format --check src test
-      - run: gleam deps download
-
-      - run: gleam test --target erlang
-      - run: gleam test --target javascript --runtime node
-      - run: gleam test --target javascript --runtime deno
+          python-version: "3.12"
+      - run: ./test.sh

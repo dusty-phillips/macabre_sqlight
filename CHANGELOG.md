@@ -1,5 +1,12 @@
 # Changelog
 
+## macabre fork
+
+This repository is a fork of [sqlight](https://github.com/lpil/sqlight) that
+adds a Python target for macabre. The upstream changelog below is preserved
+unchanged. The Python FFI lives in `src/sqlight_ffi.py` and is backed by the
+Python standard library `sqlite3` module.
+
 ## v1.2.0 - 2026-07-10
 
 - Support added for other JavaScript runtimes such as NodeJS by migrating to

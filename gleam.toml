@@ -1,11 +1,11 @@
-name = "sqlight"
+name = "macabre_sqlight"
 version = "1.2.0"
 licences = ["Apache-2.0"]
-description = "Use SQLite from Gleam!"
+description = "Use SQLite from Gleam (macabre python-target fork of sqlight)"
 
 gleam = ">= 1.15.0"
 
-repository = { type = "github", user = "lpil", repo = "sqlight" }
+repository = { type = "github", user = "dusty-phillips", repo = "macabre_sqlight" }
 links = [
     { title = "Website", href = "https://gleam.run" },
     { title = "Sponsor", href = "https://github.com/sponsors/lpil" },
@@ -20,7 +20,7 @@ allow_write = ["tmp"]
 
 [dependencies]
 gleam_stdlib = ">= 0.51.0 and < 2.0.0"
-esqlite = "~> 0.8"
+macabre_stdlib = { git = "git@github.com:dusty-phillips/macabre_stdlib.git", ref = "main" }
 
 [dev-dependencies]
-gleeunit = "~> 1.0"
+gleeunit = ">= 1.0.0 and < 2.0.0"

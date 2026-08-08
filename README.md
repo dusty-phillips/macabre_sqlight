@@ -1,16 +1,15 @@
-# sqlight
-
-[![Package Version](https://img.shields.io/hexpm/v/sqlight)](https://hex.pm/packages/sqlight)
-[![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/sqlight/)
+# macabre_sqlight
 
 Use [SQLite](https://www.sqlite.org/index.html) from Gleam!
 
-Works on Erlang and on JavaScript runtimes that support `node:sqlite`, like
-NodeJS, and NodeJS.
+This is a fork of [lpil/sqlight](https://github.com/lpil/sqlight) (Apache-2.0)
+that adds Python externals for [macabre](https://github.com/anomalyco/macabre)'s
+Python target. The fork preserves the full upstream history. The only Gleam
+changes are the added `@external(python, ...)` attributes on the FFI functions;
+the Python implementation lives in `src/sqlight_ffi.py` (mirroring
+`sqlight_ffi.mjs`) and uses Python's built-in `sqlite3` module.
 
-```sh
-gleam add sqlight
-```
+Because the module is still named `sqlight`, existing code keeps working:
 
 ```gleam
 import gleam/dynamic/decode
@@ -44,18 +43,16 @@ pub fn main() {
 }
 ```
 
-Documentation can be found at <https://hexdocs.pm/sqlight>.
+## Using it with macabre
 
-## Why SQLite?
+Add the fork to a macabre project (macabre resolves dependencies from git),
+along with `macabre_stdlib` (which provides the `gleam/*` modules):
 
-SQLite is a implementation of SQL as a library. This means that you don't run a
-separate SQL server that your program communicates with, but you embed the SQL
-implementation directly in your program. SQLite stores its data in a single
-file. The file format is portable between different machine architectures. It
-supports atomic transactions and it is possible to access the file by multiple
-processes and different programs.
-
-You can also use in-memory databases with SQLite, which may be useful for testing.
+```toml
+[dependencies]
+macabre_stdlib = { git = "git@github.com:dusty-phillips/macabre_stdlib.git", ref = "main" }
+macabre_sqlight = { git = "git@github.com:dusty-phillips/macabre_sqlight.git", ref = "main" }
+```
 
 ## Implementation
 
@@ -68,9 +65,24 @@ When running on JavaScript it is a wrapper around the
 [`node:sqlite`](https://nodejs.org/api/sqlite.html) module that is built-in to
 the most common runtimes.
 
+When running on Python it is a wrapper around Python's built-in `sqlite3`
+module. SQLite error codes are mapped to `ErrorCode` values using the extended
+error codes exposed by `sqlite3.Error`, matching the Erlang and Node.js
+behaviour.
+
 ## On using Bool with SQLite
 
 SQLite does not have a native boolean type. Instead, it uses ints, where 0 is
 False and 1 is True. Because of this the Gleam stdlib decoder for bools will not
 work, instead the `sqlight.decode_bool` function should be used as it supports
 both ints and bools.
+
+## Development
+
+Macabre targets Python, so the stock `gleam` compiler (which does not recognise
+the `python` external target) cannot check or format this package. `./test.sh`
+syntax-checks the Python FFI instead.
+
+## License
+
+Apache-2.0, matching upstream sqlight.
