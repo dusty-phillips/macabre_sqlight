@@ -11,16 +11,8 @@ links = [
     { title = "Sponsor", href = "https://github.com/sponsors/lpil" },
 ]
 
-[javascript]
-runtime = "deno"
-
-[javascript.deno]
-allow_read = ["gleam.toml", "test", "build", "tmp"]
-allow_write = ["tmp"]
-
 [dependencies]
-gleam_stdlib = ">= 0.51.0 and < 2.0.0"
-macabre_stdlib = { git = "git@github.com:dusty-phillips/macabre_stdlib.git", ref = "main" }
+gleam_stdlib = { git = "git@github.com:dusty-phillips/macabre_stdlib.git", ref = "main" }
 
 [dev-dependencies]
-gleeunit = ">= 1.0.0 and < 2.0.0"
+gleeunit = { git = "git@github.com:dusty-phillips/macabre_gleeunit.git", ref = "main" }
