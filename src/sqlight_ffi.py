@@ -1,6 +1,6 @@
 import sqlite3
 
-from gleam_builtins import Error, GleamList, Ok
+from gleam_builtins import EmptyGleamList, Error, GleamList, Ok
 
 
 def open(path: str):
@@ -52,14 +52,14 @@ def null_():
 def _list_to_python(gleam_list):
     result = []
     head = gleam_list
-    while head is not None:
+    while isinstance(head, GleamList):
         result.append(head.value)
         head = head.tail
     return result
 
 
 def _list_to_gleam(values):
-    result = None
+    result = EmptyGleamList()
     for value in reversed(values):
         result = GleamList(value, result)
     return result
