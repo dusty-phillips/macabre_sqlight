@@ -1,4 +1,4 @@
-name = "macabre_sqlight"
+name = "sqlight"
 version = "1.2.0"
 licences = ["Apache-2.0"]
 description = "Use SQLite from Gleam (macabre python-target fork of sqlight)"
